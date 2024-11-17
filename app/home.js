@@ -2,37 +2,29 @@ import React from 'react';
 import { View, Text, Image, TextInput, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
+import useStore from '../store/useStore';
 
-
-const HomeScreen = ({ navigation }) => {
-    const router = useRouter();
- 
-  const products = [
-    {
-      id: '1',
-      name: 'Abacate Paulista',
-      location: 'Mercale - Avenida Ceará',
-      seller: 'Alan123',
-      price: '8,99',
-      
-    },
-   
-  ];
+const HomeScreen = () => {
+  const router = useRouter();
+  const { products } = useStore(); 
 
   const renderProduct = ({ item }) => (
     <View style={styles.productCard}>
-      <Image source={item.image} style={styles.productImage} />
+      <Image
+        source={item.image ? { uri: item.image } : require('../assets/imagens/logotipo.png')} 
+        style={styles.productImage}
+      />
       <View style={styles.productInfo}>
         <Text style={styles.productName}>{item.name}</Text>
         <View style={styles.productDetails}>
           <Icon name="location-outline" size={16} color="#555" />
-          <Text style={styles.productLocation}>{item.location}</Text>
+          <Text style={styles.productLocation}>{item.location || 'Local não especificado'}</Text>
         </View>
         <View style={styles.productDetails}>
           <Icon name="person-outline" size={16} color="#555" />
-          <Text style={styles.productSeller}>{item.seller}</Text>
+          <Text style={styles.productSeller}>{item.seller || 'Anônimo'}</Text>
         </View>
-        <Text style={styles.productPrice}>R$ {item.price}</Text>
+        <Text style={styles.productPrice}>R$ {item.price || '0,00'}</Text>
       </View>
     </View>
   );
@@ -48,13 +40,14 @@ const HomeScreen = ({ navigation }) => {
       </View>
 
       <FlatList
-        data={products}
+        data={products} 
         renderItem={renderProduct}
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.productList}
+        ListEmptyComponent={<Text style={styles.emptyMessage}>Nenhum produto adicionado.</Text>}
       />
 
-      <View style={styles.footer}>
+<View style={styles.footer}>
         <TouchableOpacity onPress={() => router.push('/home')}>
           <Icon name="home-outline" size={30} color="#4CAF50" />
         </TouchableOpacity>

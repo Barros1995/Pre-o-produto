@@ -1,32 +1,50 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
+import useStore from '../store/useStore';
 
-const AddProductScreen = ({ navigation }) => {
+const AddProductScreen = () => {
   const router = useRouter();
+  const { addProduct } = useStore(); 
   const [location, setLocation] = useState('');
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [category, setCategory] = useState('');
   const [observation, setObservation] = useState('');
 
+  const handleSave = () => {
+    const newProduct = {
+      location,
+      name,
+      price,
+      category,
+      observation,
+    };
+
+    addProduct(newProduct); 
+    router.push('/home'); 
+  };
+
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Adicionar Produto</Text>
 
         <Text style={styles.label}>Local *</Text>
-        <Picker
-          selectedValue={location}
-          onValueChange={(itemValue) => setLocation(itemValue)}
-          style={styles.picker}
-        >
-          <Picker.Item label="Selecione o local" value="" />
-          <Picker.Item label="Mercale - Avenida Ceará" value="Mercale - Avenida Ceará" />
-          {/* Adicione outras opções conforme necessário */}
-        </Picker>
+        <View style={styles.pickerWrapper}>
+          <Picker
+            selectedValue={location}
+            onValueChange={(itemValue) => setLocation(itemValue)}
+            style={styles.picker}
+            itemStyle={styles.pickerItem}  
+          >
+            <Picker.Item label="Selecione o local" value="" />
+            <Picker.Item label="Mercale - Avenida Ceará" value="Mercale - Avenida Ceará" />
+           
+          </Picker>
+        </View>
         <TouchableOpacity>
           <Text style={styles.suggestLocation}>Sugerir Local</Text>
         </TouchableOpacity>
@@ -49,16 +67,19 @@ const AddProductScreen = ({ navigation }) => {
         />
 
         <Text style={styles.label}>Categoria *</Text>
-        <Picker
-          selectedValue={category}
-          onValueChange={(itemValue) => setCategory(itemValue)}
-          style={styles.picker}
-        >
-          <Picker.Item label="Selecione a categoria" value="" />
-          <Picker.Item label="Frutas" value="Frutas" />
-          <Picker.Item label="Legumes" value="Legumes" />
-          {/* Adicione outras categorias conforme necessário */}
-        </Picker>
+        <View style={styles.pickerWrapper}>
+          <Picker
+            selectedValue={category}
+            onValueChange={(itemValue) => setCategory(itemValue)}
+            style={styles.picker}
+            itemStyle={styles.pickerItem}  
+          >
+            <Picker.Item label="Selecione a categoria" value="" />
+            <Picker.Item label="Frutas" value="Frutas" />
+            <Picker.Item label="Legumes" value="Legumes" />
+        
+          </Picker>
+        </View>
 
         <Text style={styles.label}>Observação</Text>
         <TextInput
@@ -81,7 +102,7 @@ const AddProductScreen = ({ navigation }) => {
         </View>
 
         {/* Botão Salvar */}
-        <TouchableOpacity style={styles.saveButton}>
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
           <Text style={styles.saveButtonText}>Salvar</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -104,7 +125,7 @@ const AddProductScreen = ({ navigation }) => {
           <Icon name="person-outline" size={30} color="#4CAF50" />
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -128,14 +149,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 10,
   },
-  picker: {
+  pickerWrapper: {
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 8,
     marginTop: 5,
     marginBottom: 10,
-    paddingHorizontal: 10,
-    height: 40,
+    overflow: 'hidden',
+    paddingRight: 5, 
+  },
+  picker: {
+    width: '100%',
+    paddingRight: 30, 
+    height: 50,
+  },
+  pickerItem: {
+    fontSize: 5, 
   },
   suggestLocation: {
     color: '#1E90FF',
@@ -143,7 +172,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   input: {
-    height: 40,
+    height: 50,
     borderColor: '#ddd',
     borderWidth: 1,
     borderRadius: 8,
@@ -179,13 +208,13 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     backgroundColor: '#4CAF50',
-    paddingVertical: 10, 
-    paddingHorizontal: 30, 
+    paddingVertical: 10,
+    paddingHorizontal: 30,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 10,
-    width: '80%', 
-    alignSelf: 'center', 
+    width: '80%',
+    alignSelf: 'center',
   },
   saveButtonText: {
     color: '#fff',

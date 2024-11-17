@@ -1,28 +1,27 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons'; // Usando Ionicons
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Image } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
+import useStore from '../store/useStore';
 
 const Perfil = () => {
   const router = useRouter();
-
+  const { user } = useStore(); 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        
-        {/* Título da Tela */}
+
         <Text style={styles.title}>Perfil</Text>
 
-        {/* Cabeçalho com a Imagem de Perfil */}
+        
         <View style={styles.header}>
           <Image
             style={styles.profileImage}
             source={{ uri: 'https://via.placeholder.com/150' }}
           />
-          <Text style={styles.profileName}>Lizza</Text>
+           <Text style={styles.profileName}>{user.name || 'Usuário'}</Text>
         </View>
 
-        {/* Opções de perfil */}
         <TouchableOpacity style={styles.option} onPress={() => router.push('/editar-perfil')}>
           <Icon name="person-outline" size={24} color="#333" />
           <View style={styles.optionTextContainer}>
@@ -56,7 +55,6 @@ const Perfil = () => {
         </TouchableOpacity>
       </ScrollView>
 
-      {/* Barra de navegação */}
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => router.push('/home')}>
           <Icon name="home-outline" size={30} color="#4CAF50" />

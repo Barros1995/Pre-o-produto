@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
+import useStore from '../store/useStore';
 
 const EditarPerfil = () => {
   const router = useRouter();
+  const { user, setUser } = useStore();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -18,56 +20,60 @@ const EditarPerfil = () => {
           <Text style={styles.title}>Perfil</Text>
         </View>
 
-        {/* Seção de imagem e nome do perfil */}
-        <View style={styles.profileSection}>
-          <View style={styles.profileImageContainer}>
-            <Icon name="person-circle-outline" size={100} color="#fff" />
-          </View>
-          <Text style={styles.profileName}>Lizza</Text>
+     
+        <View style={styles.profileHeader}>
+          <Image
+            style={styles.profileImage}
+            source={{ uri: 'https://via.placeholder.com/150' }}
+          />
+          <Text style={styles.profileName}>{user.name || 'Usuário'}</Text>
         </View>
 
         {/* Campos de entrada de dados */}
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Nome *</Text>
-          <TextInput style={styles.input} placeholder="Value" />
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu nome"
+            value={user.name}
+            onChangeText={(text) => setUser({ name: text })}
+          />
 
           <Text style={styles.label}>E-mail</Text>
-          <TextInput style={styles.input} placeholder="Value" />
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu e-mail"
+            value={user.email}
+            onChangeText={(text) => setUser({ email: text })}
+          />
 
           <Text style={styles.label}>CPF</Text>
-          <TextInput style={styles.input} placeholder="Value" />
-
-          <Text style={styles.label}>Senha</Text>
-          <TextInput style={styles.input} placeholder="Value" secureTextEntry />
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu CPF"
+            value={user.cpf}
+            onChangeText={(text) => setUser({ cpf: text })}
+          />
 
           <Text style={styles.label}>Telefone</Text>
-          <TextInput style={styles.input} placeholder="Value" />
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu telefone"
+            value={user.phone}
+            onChangeText={(text) => setUser({ phone: text })}
+          />
         </View>
 
         {/* Botão de salvar */}
-        <TouchableOpacity style={styles.saveButton}>
+        <TouchableOpacity style={styles.saveButton} onPress={() => router.push('/perfil')}>
           <Text style={styles.saveButtonText}>Salvar</Text>
         </TouchableOpacity>
 
       </ScrollView>
 
-      {/* Barra de navegação */}
+  
       <View style={styles.footer}>
-        <TouchableOpacity onPress={() => router.push('/home')}>
-          <Icon name="home-outline" size={30} color="#4CAF50" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('/adicionar')}>
-          <Icon name="grid-outline" size={30} color="#4CAF50" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('/categoria')}>
-          <Icon name="list-outline" size={30} color="#4CAF50" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('/local')}>
-          <Icon name="location-outline" size={30} color="#4CAF50" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push('/perfil')}>
-          <Icon name="person-outline" size={30} color="#4CAF50" />
-        </TouchableOpacity>
+      
       </View>
     </SafeAreaView>
   );
@@ -82,6 +88,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   header: {
+    
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -89,6 +96,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     position: 'relative',
+   
   },
   backButton: {
     position: 'absolute',
@@ -99,25 +107,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
-  profileSection: {
+  profileHeader: {
     backgroundColor: '#4CAF50',
     alignItems: 'center',
     paddingVertical: 20,
     marginBottom: 20,
   },
-  profileImageContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
+  profileImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 10,
   },
   profileName: {
     fontSize: 20,
     color: '#fff',
     fontWeight: 'bold',
-    marginTop: 10,
   },
   inputContainer: {
     marginBottom: 20,
@@ -158,5 +163,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
 
 export default EditarPerfil;

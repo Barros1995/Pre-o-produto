@@ -1,9 +1,44 @@
-import React from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, Image, Text } from 'react-native';
+import React, { useState } from 'react';
+import { View, TextInput, TouchableOpacity, StyleSheet, Image, Text, Alert } from 'react-native';
+import useStore from '../store/useStore';
 import { useRouter } from 'expo-router';
+import { endEvent } from 'react-native/Libraries/Performance/Systrace';
+import EventEmitter from 'react-native/Libraries/vendor/emitter/EventEmitter';
 
 const LoginPagina = () => {
     const router = useRouter();
+    const [usuario, setUsuario] = useState("");
+    const  [senha, setSenha] = useState("");
+    const {login, mensagemErro} = useStore();
+
+    const handleInputUsuario = (text) => {
+        setUsuario(text);
+
+        console.log(usuario);
+    };
+
+    const handleInputSenha = (text) => {
+        setSenha(text);
+
+        console.log(senha);
+    };
+
+    const logar = async () =>{
+
+        if(usuario && senha){
+            login(usuario, senha);
+
+            }else{
+                  Alert.alert("Preencha os campos de usuário e senha");
+            }
+
+            if(mensagemErro != ""){
+                Alert.alert(mensagemErro);
+            
+            }
+
+        }
+
 
     return (
         <View style={styles.container}>
@@ -13,14 +48,18 @@ const LoginPagina = () => {
             <Text style={styles.texto}>Login</Text>
             <TextInput
                 style={styles.input}
+                onChangeText={handleInputUsuario}
+                value={usuario} 
                 placeholder="Usuário"
             />
             <TextInput
                 style={styles.input}
+                onChangeText={handleInputSenha}
+                value={senha}
                 placeholder="Senha"
-                secureTextEntry
+                secureTextEntry={true}
             />
-            <TouchableOpacity style={styles.button} onPress={() => router.push('/home')}>
+            <TouchableOpacity style={styles.button} onPress={logar}>
                 <Text style={styles.buttonText}>Entrar</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push('/cadastro')}>
@@ -39,18 +78,18 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     logoContainer: {
-        marginTop: 20, 
+        marginTop: 20,
         marginBottom: 50,
         alignItems: 'center',
     },
     logo: {
-        width: 200,  
-        height: 200,  
+        width: 200,
+        height: 200,
     },
     texto: {
         fontSize: 25,
         fontWeight: 'bold',
-        marginBottom: 50, 
+        marginBottom: 50,
     },
     input: {
         width: '80%',
