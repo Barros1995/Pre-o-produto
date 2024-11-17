@@ -1,25 +1,36 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import useStore from '../store/useStore';
 
 const Perfil = () => {
   const router = useRouter();
-  const { user } = useStore(); 
+  const { user, usuarioLogado, logout } = useStore();
+
+  useEffect(() => {
+    if (!usuarioLogado) {
+      router.push('/login'); // Redireciona para login se não estiver autenticado
+    }
+  }, [usuarioLogado]);
+
+  const sair = () => {
+    logout();
+    Alert.alert("Logout", "Você saiu da sua conta.");
+    router.replace('/login'); // Substitui a tela para evitar voltar ao perfil com 'Back'
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-
         <Text style={styles.title}>Perfil</Text>
 
-        
         <View style={styles.header}>
           <Image
             style={styles.profileImage}
-            source={{ uri: 'https://via.placeholder.com/150' }}
+            source={{ uri: user.profileImage || 'https://via.placeholder.com/150' }} // Imagem do estado global ou placeholder
           />
-           <Text style={styles.profileName}>{user.name || 'Usuário'}</Text>
+          <Text style={styles.profileName}>{user.name || 'Usuário'}</Text>
         </View>
 
         <TouchableOpacity style={styles.option} onPress={() => router.push('/editar-perfil')}>
@@ -46,7 +57,7 @@ const Perfil = () => {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.option} onPress={() => router.push('/login')}>
+        <TouchableOpacity style={styles.option} onPress={sair}>
           <Icon name="log-out-outline" size={24} color="#333" />
           <View style={styles.optionTextContainer}>
             <Text style={styles.optionTitle}>Sair</Text>
@@ -135,9 +146,6 @@ const styles = StyleSheet.create({
     height: 60,
     borderTopWidth: 1,
     borderColor: '#ddd',
-  },
-  iconButton: {
-    alignItems: 'center',
   },
 });
 
