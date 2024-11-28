@@ -15,7 +15,7 @@ const AddProductScreen = () => {
   const [photo, setPhoto] = useState(null);
 
   const handleOpenCamera = () => {
-    // Navega para a tela de câmera e espera o retorno da foto
+  
     router.push({
       pathname: '/camera',
       params: { onPhotoTaken: (photoUri) => setPhoto(photoUri) },

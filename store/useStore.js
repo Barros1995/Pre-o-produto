@@ -14,21 +14,21 @@ const useStore = create((set) => ({
     })),
 
   // Produtos
-  products: [], // Lista de produtos
+  products: [], 
   addProduct: (product) =>
     set((state) => ({
       products: [...state.products, product],
     })),
 
   // Categorias
-  categories: ['Categoria 1', 'Categoria 2', 'Categoria 3'], // Exemplo de categorias iniciais
+  categories: ['Categoria 1', 'Categoria 2'],
   addCategory: (category) =>
     set((state) => ({
       categories: [...state.categories, category],
     })),
 
   // Gerenciamento de foto capturada
-  capturedPhoto: null, // URI da foto capturada
+  capturedPhoto: null, 
   setCapturedPhoto: (photoUri) =>
     set({
       capturedPhoto: photoUri,
