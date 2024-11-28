@@ -6,12 +6,12 @@ import useStore from '../store/useStore';
 
 const HomeScreen = () => {
   const router = useRouter();
-  const { products } = useStore(); 
+  const { products } = useStore();
 
   const renderProduct = ({ item }) => (
     <View style={styles.productCard}>
       <Image
-        source={item.image ? { uri: item.image } : require('../assets/imagens/logotipo.png')} 
+        source={item.photo ? { uri: item.photo } : require('../assets/imagens/logotipo.png')}
         style={styles.productImage}
       />
       <View style={styles.productInfo}>
@@ -19,10 +19,6 @@ const HomeScreen = () => {
         <View style={styles.productDetails}>
           <Icon name="location-outline" size={16} color="#555" />
           <Text style={styles.productLocation}>{item.location || 'Local não especificado'}</Text>
-        </View>
-        <View style={styles.productDetails}>
-          <Icon name="person-outline" size={16} color="#555" />
-          <Text style={styles.productSeller}>{item.seller || 'Anônimo'}</Text>
         </View>
         <Text style={styles.productPrice}>R$ {item.price || '0,00'}</Text>
       </View>
@@ -32,22 +28,19 @@ const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <TextInput
-          placeholder="Pesquisar produto"
-          style={styles.searchInput}
-        />
+        <TextInput placeholder="Pesquisar produto" style={styles.searchInput} />
         <Icon name="search-outline" size={20} color="#555" style={styles.searchIcon} />
       </View>
 
       <FlatList
-        data={products} 
+        data={products}
         renderItem={renderProduct}
         keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.productList}
         ListEmptyComponent={<Text style={styles.emptyMessage}>Nenhum produto adicionado.</Text>}
       />
 
-<View style={styles.footer}>
+      <View style={styles.footer}>
         <TouchableOpacity onPress={() => router.push('/home')}>
           <Icon name="home-outline" size={30} color="#4CAF50" />
         </TouchableOpacity>
@@ -108,6 +101,7 @@ const styles = StyleSheet.create({
   productImage: {
     width: 60,
     height: 60,
+    borderRadius: 8,
     marginRight: 16,
   },
   productInfo: {
@@ -128,16 +122,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#555',
   },
-  productSeller: {
-    marginLeft: 4,
-    fontSize: 14,
-    color: '#555',
-  },
   productPrice: {
     fontSize: 20,
     color: '#4CAF50',
     fontWeight: 'bold',
     marginTop: 4,
+  },
+  emptyMessage: {
+    textAlign: 'center',
+    color: '#aaa',
+    marginTop: 20,
+    fontSize: 16,
   },
   footer: {
     flexDirection: 'row',

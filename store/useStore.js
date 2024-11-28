@@ -14,11 +14,29 @@ const useStore = create((set) => ({
     })),
 
   // Produtos
-  products: [],
+  products: [], // Lista de produtos
   addProduct: (product) =>
     set((state) => ({
       products: [...state.products, product],
     })),
+
+  // Categorias
+  categories: ['Categoria 1', 'Categoria 2', 'Categoria 3'], // Exemplo de categorias iniciais
+  addCategory: (category) =>
+    set((state) => ({
+      categories: [...state.categories, category],
+    })),
+
+  // Gerenciamento de foto capturada
+  capturedPhoto: null, // URI da foto capturada
+  setCapturedPhoto: (photoUri) =>
+    set({
+      capturedPhoto: photoUri,
+    }),
+  clearCapturedPhoto: () =>
+    set({
+      capturedPhoto: null,
+    }),
 
   // Autenticação
   usuarioLogado: false,
@@ -33,53 +51,46 @@ const useStore = create((set) => ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: usuario, //"emilys"
-          password: senha, //"emilyspass"
+          username: usuario,
+          password: senha,
         }),
       });
 
-      // Verificar status HTTP
       if (!response.ok) {
         const errorData = await response.json();
-        set({ mensagemErro: `Erro: ${errorData.message, 'Falha no login'}` });
+        set({ mensagemErro: `Erro: ${errorData.message || 'Falha no login'}` });
         return;
       }
 
       const loginData = await response.json();
       console.log('Dados de login:', loginData);
 
-      // Atualizar estado no login bem-sucedido
-      if(loginData.accessToken){
-        const logarUsuario = await /* providing access token in bearer */
-        fetch('https://dummyjson.com/user/me', {
-          method: 'GET',
-          headers: {
-            'Authorization': 'Bearer' + loginData.accessToken, 
-          },
-          credentials: 'include' // Include cookies (e.g., accessToken) in the request
-        })
-        const logarUsuarioData = await logarUsuario.json();
-        set({usuarioLogado:true, usuario: usuario,senha: senha, token: loginData.accessToken,})
-      }
-
       set({
         usuarioLogado: true,
         token: loginData.token,
         mensagemErro: '',
       });
+
       set({
         user: {
           name: loginData.username,
           email: loginData.email || '',
         },
-      });   
-      
+      });
     } catch (error) {
-      
+      console.error('Erro no login:', error);
+      set({ mensagemErro: 'Erro ao conectar ao servidor.' });
     }
   },
 
-  logout: () => set({usuarioLogado: false, usuario:"", senha:"", token:""}),
+  logout: () =>
+    set({
+      usuarioLogado: false,
+      usuario: '',
+      senha: '',
+      token: '',
+      user: { name: '', email: '', cpf: '', phone: '' },
+    }),
 }));
 
 export default useStore;

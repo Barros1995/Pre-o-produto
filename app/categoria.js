@@ -1,18 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
+import useStore from '../store/useStore';
 
 const AdicionarCategoria = () => {
-    const router = useRouter();
+  const router = useRouter();
+  const { addCategory } = useStore(); 
+  const [nomeCategoria, setNomeCategoria] = useState(''); 
+
+  const handleSave = () => {
+    if (nomeCategoria.trim() !== '') {
+      addCategory(nomeCategoria); 
+      setNomeCategoria(''); 
+      router.push('/categoria');
+    } else {
+      alert('Por favor, insira um nome para a categoria.'); 
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>Adicionar Categoria</Text>
         <Text style={styles.label}>Nome *</Text>
-        <TextInput style={styles.input} placeholder="Value" />
+        <TextInput
+          style={styles.input}
+          placeholder="Digite o nome da categoria"
+          value={nomeCategoria}
+          onChangeText={setNomeCategoria} // Atualiza o estado local
+        />
 
-        <TouchableOpacity style={styles.saveButton}>
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
           <Text style={styles.saveButtonText}>Salvar</Text>
         </TouchableOpacity>
       </View>
@@ -73,7 +92,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     alignSelf: 'center',
-    marginBottom: 20, // Espaço entre o botão e a barra de ícones
+    marginBottom: 20,
   },
   saveButtonText: {
     color: '#fff',
