@@ -12,7 +12,6 @@ const RouterLayout = () => {
             <Stack.Screen name="local" />
             <Stack.Screen name="perfil" />
             <Stack.Screen name="editar-perfil" />
-            <Stack.Screen name="testecamera" />
             <Stack.Screen name="camera" />
         </Stack>
     );

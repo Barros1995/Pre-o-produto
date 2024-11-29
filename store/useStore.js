@@ -21,7 +21,7 @@ const useStore = create((set) => ({
     })),
 
   // Categorias
-  categories: ['Categoria 1', 'Categoria 2'],
+  categories:  [],
   addCategory: (category) =>
     set((state) => ({
       categories: [...state.categories, category],
@@ -40,8 +40,8 @@ const useStore = create((set) => ({
 
   // Autenticação
   usuarioLogado: false,
-  usuario: '',
-  senha: '',
+  usuario: '', //emilys
+  senha: '',//emilyspass
   token: '',
   mensagemErro: '',
 

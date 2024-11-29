@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import useStore from '../store/useStore';
 
 const AdicionarCategoria = () => {
   const router = useRouter();
-  const { addCategory } = useStore(); 
-  const [nomeCategoria, setNomeCategoria] = useState(''); 
+  const { addCategory } = useStore();
+  const [nomeCategoria, setNomeCategoria] = useState('');
 
   const handleSave = () => {
     if (nomeCategoria.trim() !== '') {
-      addCategory(nomeCategoria); 
-      setNomeCategoria(''); 
+      addCategory(nomeCategoria);
+      setNomeCategoria('');
+      Alert.alert('Sucesso', 'Categoria salva com sucesso!');
       router.push('/categoria');
     } else {
-      alert('Por favor, insira um nome para a categoria.'); 
+      alert('Por favor, insira um nome para a categoria.');
     }
   };
 
@@ -28,7 +29,7 @@ const AdicionarCategoria = () => {
           style={styles.input}
           placeholder="Digite o nome da categoria"
           value={nomeCategoria}
-          onChangeText={setNomeCategoria} // Atualiza o estado local
+          onChangeText={setNomeCategoria} 
         />
 
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>

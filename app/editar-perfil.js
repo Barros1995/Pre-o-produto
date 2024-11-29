@@ -15,7 +15,7 @@ const EditarPerfil = () => {
         {/* Cabeçalho com o botão de voltar e o título centralizado */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-            <Icon name="arrow-back" size={24} color="#333" />
+            <Icon name="arrow-back" size={35} color="#333" />
           </TouchableOpacity>
           <Text style={styles.title}>Perfil</Text>
         </View>

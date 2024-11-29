@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import useStore from '../store/useStore';
 
@@ -15,37 +16,48 @@ const AddProductScreen = () => {
   const [photo, setPhoto] = useState(null);
 
   const handleOpenCamera = () => {
-  
-    router.push({
-      pathname: '/camera',
-      params: { onPhotoTaken: (photoUri) => setPhoto(photoUri) },
-    });
+    router.push('/camera'); // Navega para a tela da câmera
   };
 
   const handleSave = () => {
+    if (!name || !price || !category || !location) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+
     const newProduct = {
       location,
       name,
       price,
       category,
       observation,
-      photo,
+      photo, // Salva a foto no estado
     };
 
     addProduct(newProduct);
-    clearCapturedPhoto();
     router.push('/home');
   };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <Text style={styles.title}>Adicionar Produto</Text>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.push('/home')}>
+          <Icon name="arrow-back" size={35} color="#000" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Adicionar Produto</Text>
+      </View>
 
       <Text style={styles.label}>Local *</Text>
-      <Picker selectedValue={location} onValueChange={setLocation} style={styles.picker}>
-        <Picker.Item label="Selecione o local" value="" />
-        <Picker.Item label="Mercale - Avenida Ceará" value="Mercale - Avenida Ceará" />
-      </Picker>
+      <View style={styles.input}>
+        <Picker
+          selectedValue={location}
+          onValueChange={setLocation}
+          style={styles.picker}
+        >
+          <Picker.Item label="Selecione o local" value="" />
+          <Picker.Item label="Mercale - Avenida Ceará" value="Mercale - Avenida Ceará" />
+        </Picker>
+      </View>
 
       <Text style={styles.label}>Nome *</Text>
       <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Nome do produto" />
@@ -54,12 +66,18 @@ const AddProductScreen = () => {
       <TextInput style={styles.input} value={price} onChangeText={setPrice} placeholder="Preço" keyboardType="numeric" />
 
       <Text style={styles.label}>Categoria *</Text>
-      <Picker selectedValue={category} onValueChange={setCategory} style={styles.picker}>
-        <Picker.Item label="Selecione a categoria" value="" />
-        {categories.map((cat, index) => (
-          <Picker.Item key={index} label={cat} value={cat} />
-        ))}
-      </Picker>
+      <View style={styles.input}>
+        <Picker
+          selectedValue={category}
+          onValueChange={setCategory}
+          style={styles.picker}
+        >
+          <Picker.Item label="Selecione a categoria" value="" />
+          {categories.map((cat, index) => (
+            <Picker.Item key={index} label={cat} value={cat} />
+          ))}
+        </Picker>
+      </View>
 
       <Text style={styles.label}>Fotos *</Text>
       <View style={styles.photoContainer}>
@@ -85,6 +103,16 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 40,
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  headerTitle: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    marginLeft: 40,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -98,7 +126,7 @@ const styles = StyleSheet.create({
   },
   picker: {
     height: 50,
-    marginBottom: 10,
+    width: '100%',
   },
   input: {
     height: 40,
@@ -107,6 +135,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 10,
     marginBottom: 10,
+    justifyContent: 'center',
   },
   photoContainer: {
     marginBottom: 20,
@@ -131,6 +160,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
+    marginTop: 30,
   },
   saveButtonText: {
     color: '#fff',

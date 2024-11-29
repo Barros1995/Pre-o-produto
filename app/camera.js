@@ -1,98 +1,64 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useRef, useState, useEffect } from 'react';
+import { View, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 import { Camera } from 'expo-camera';
-
+import { useRouter } from 'expo-router';
+import useStore from '../store/useStore';
 
 const CameraScreen = () => {
-    const [hasPermission, setHasPermission] = useState(null);
-    const [cameraOpen, setCameraOpen] = useState(false);
-    const cameraRef = useRef(null);
+  const [hasPermission, setHasPermission] = useState(null);
+  const cameraRef = useRef(null);
+  const router = useRouter();
+  const { setCapturedPhoto } = useStore();
 
-    const requestCameraPermission = async () => {
-        const { status } = await Camera.requestCameraPermissionsAsync();
-        setHasPermission(status === 'granted');
-    };
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
 
-    const handleOpenCamera = async () => {
-        if (hasPermission === null) {
-            await requestCameraPermission();
-        }
+  const handleCapturePhoto = async () => {
+    if (!cameraRef.current) return;
+    const photoData = await cameraRef.current.takePictureAsync();
+    setCapturedPhoto(photoData.uri); // Armazena a foto no Zustand
+    router.push('/addProduct');
+  };
 
-        if (hasPermission === false) {
-            Alert.alert('Permissão negada', 'A câmera precisa de permissão para funcionar.');
-            return;
-        }
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
 
-        setCameraOpen(true);
-    };
-
-    const handleCapturePhoto = async () => {
-        if (cameraRef.current) {
-            const photo = await cameraRef.current.takePictureAsync();
-            console.log('Foto capturada:', photo.uri);
-            setCameraOpen(false);
-        }
-    };
-
-    if (cameraOpen) {
-        return (
-            <Camera.Camera style={{ flex: 1 }} ref={cameraRef}>
-                <View style={styles.cameraContainer}>
-                    <TouchableOpacity style={styles.captureButton} onPress={handleCapturePhoto}>
-                        <Text style={styles.captureText}>Tirar Foto</Text>
-                    </TouchableOpacity>
-                </View>
-            </Camera.Camera>
-        );
-    }
-
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Teste da Câmera</Text>
-            <TouchableOpacity style={styles.openCameraButton} onPress={handleOpenCamera}>
-                <Text style={styles.openCameraText}>Abrir Câmera</Text>
-            </TouchableOpacity>
+  return (
+    <View style={{ flex: 1 }}>
+      <Camera ref={cameraRef} style={{ flex: 1 }} type={Camera.Constants.Type.back}>
+        <View style={styles.cameraContainer}>
+          <TouchableOpacity style={styles.captureButton} onPress={handleCapturePhoto}>
+            <Text style={styles.captureText}>Tirar Foto</Text>
+          </TouchableOpacity>
         </View>
-    );
+      </Camera>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    openCameraButton: {
-        backgroundColor: '#1E90FF',
-        padding: 10,
-        borderRadius: 8,
-    },
-    openCameraText: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
-    cameraContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    captureButton: {
-        backgroundColor: 'red',
-        padding: 20,
-        borderRadius: 50,
-        position: 'absolute',
-        bottom: 30,
-    },
-    captureText: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
+  cameraContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  captureButton: {
+    backgroundColor: 'red',
+    padding: 20,
+    borderRadius: 50,
+  },
+  captureText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
 });
 
 export default CameraScreen;

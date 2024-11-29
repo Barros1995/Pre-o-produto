@@ -15,7 +15,7 @@ export default function CadastroScreen() {
       
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.push('/login')} style={styles.backButton}>
-          <Icon name="arrow-back" size={55} color="#000" />
+          <Icon name="arrow-back" size={40} color="#000" />
         </TouchableOpacity>
         <Text style={styles.title}>Cadastro</Text>
       </View>
