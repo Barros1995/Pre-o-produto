@@ -24,7 +24,7 @@ const LoginPagina = () => {
 
   const logar = async () => {
     if (!usuario || !senha) {
-      return Alert.alert('Preencha os campos de usuário e senha');
+      return Alert.alert('Preencha todos campos: usuário e senha');
     }
     await login(usuario, senha);
   };

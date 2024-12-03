@@ -24,7 +24,7 @@ const EditarPerfil = () => {
         <View style={styles.profileHeader}>
           <Image
             style={styles.profileImage}
-            source={{ uri: 'https://via.placeholder.com/150' }}
+            source= {require('..//assets/imagens/perfil.png')}
           />
           <Text style={styles.profileName}>{user.name || 'Usuário'}</Text>
         </View>

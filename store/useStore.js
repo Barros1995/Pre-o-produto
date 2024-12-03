@@ -27,7 +27,7 @@ const useStore = create((set) => ({
       categories: [...state.categories, category],
     })),
 
-  // Gerenciamento de foto capturada
+  /* Gerenciamento de foto capturada
   capturedPhoto: null, 
   setCapturedPhoto: (photoUri) =>
     set({
@@ -36,7 +36,7 @@ const useStore = create((set) => ({
   clearCapturedPhoto: () =>
     set({
       capturedPhoto: null,
-    }),
+    }),*/
 
   // Autenticação
   usuarioLogado: false,

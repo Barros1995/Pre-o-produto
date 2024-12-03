@@ -28,7 +28,7 @@ const Perfil = () => {
         <View style={styles.header}>
           <Image
             style={styles.profileImage}
-            source={{ uri: user.profileImage || 'https://via.placeholder.com/150' }} // Imagem do estado global ou placeholder
+            source = {require('../assets/imagens/perfil.png')} // Imagem do estado global ou placeholder
           />
           <Text style={styles.profileName}>{user.name || 'Usuário'}</Text>
         </View>
