@@ -1,6 +1,7 @@
-Projeto O preço do dia. ![market-trend_15178340](https://github.com/user-attachments/assets/42d9a749-907b-4b6f-bb85-2bb4912c382f)
+**Projeto O preço do dia**. ![shopping_8288334](https://github.com/user-attachments/assets/4ba45a3c-4fbf-478f-88a6-6465d940beba)
 
 **Descrição**
+
 Este projeto é uma aplicação React Native criada com Expo Router para navegação entre múltiplas telas. O objetivo central é fazer cadastro de produtos, por categoria do produto, local, preço entre outras funçoes.
 
 **Telas Disponíveis**
