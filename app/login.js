@@ -12,7 +12,7 @@ const LoginPagina = () => {
   // Redirecionar se o login for bem-sucedido
   useEffect(() => {
     if (usuarioLogado) {
-      router.push('/home'); 
+      router.push('/home');  
     }
   }, [usuarioLogado]);
 

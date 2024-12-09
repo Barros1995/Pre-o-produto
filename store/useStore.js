@@ -14,46 +14,34 @@ const useStore = create((set) => ({
     })),
 
   // Produtos
-  products: [], 
-  addProduct: (product) =>
+  products: [],
+  setProducts: (products) => set({ products }), 
+  addProduct: (product) => 
     set((state) => ({
-      products: [...state.products, product],
+      products: [...state.products, product], 
     })),
 
   // Categorias
-  categories:  [],
+  categories: [],
   addCategory: (category) =>
     set((state) => ({
-      categories: [...state.categories, category],
+      categories: [...state.categories, category], 
     })),
-
-  /* Gerenciamento de foto capturada
-  capturedPhoto: null, 
-  setCapturedPhoto: (photoUri) =>
-    set({
-      capturedPhoto: photoUri,
-    }),
-  clearCapturedPhoto: () =>
-    set({
-      capturedPhoto: null,
-    }),*/
 
   // Autenticação
   usuarioLogado: false,
-  usuario: '', //emilys
-  senha: '',//emilyspass
+  usuario: '',
+  senha: '',
   token: '',
   mensagemErro: '',
 
+  // Função de login
   login: async (usuario, senha) => {
     try {
       const response = await fetch('https://dummyjson.com/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: usuario,
-          password: senha,
-        }),
+        body: JSON.stringify({ username: usuario, password: senha }),
       });
 
       if (!response.ok) {
@@ -69,13 +57,7 @@ const useStore = create((set) => ({
         usuarioLogado: true,
         token: loginData.token,
         mensagemErro: '',
-      });
-
-      set({
-        user: {
-          name: loginData.username,
-          email: loginData.email || '',
-        },
+        user: { name: loginData.username, email: loginData.email || '' },
       });
     } catch (error) {
       console.error('Erro no login:', error);
@@ -83,6 +65,7 @@ const useStore = create((set) => ({
     }
   },
 
+  // Função de logout
   logout: () =>
     set({
       usuarioLogado: false,

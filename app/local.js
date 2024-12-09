@@ -1,41 +1,107 @@
-import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import {View,Text,TextInput,TouchableOpacity,StyleSheet,SafeAreaView,ScrollView,Alert,ActivityIndicator,}
+from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 
 const AdicionarLocal = () => {
-    const router = useRouter();
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    nome: '',
+    cep: '',
+    logradouro: '',
+    numero: '',
+    bairro: '',
+    cidade: '',
+    estado: '',
+  });
+  const [loading, setLoading] = useState(false);
+
+  // Atualiza os dados do formulário
+  const handleInputChange = (field, value) => {
+    setFormData({ ...formData, [field]: value });
+  };
+
+  // Função para adicionar um local
+  const handleSave = async () => {
+    if (!formData.nome.trim() || !formData.cep.trim()) {
+      Alert.alert('Erro', 'Os campos Nome e CEP são obrigatórios.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch('https://api-produtos-9jmi.onrender.com/locations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        Alert.alert('Sucesso', 'Local adicionado com sucesso!');
+        setFormData({
+          nome: '',
+          cep: '',
+          logradouro: '',
+          numero: '',
+          bairro: '',
+          cidade: '',
+          estado: '',
+        });
+        router.push('/local');
+      } else {
+        const errorData = await response.json();
+        Alert.alert('Erro', errorData.message || 'Erro ao adicionar o local.');
+      }
+    } catch (error) {
+      console.error('Erro ao adicionar local:', error);
+      Alert.alert('Erro', 'Ocorreu um erro de rede. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>Adicionar Local</Text>
 
-        <Text style={styles.label}>Nome *</Text>
-        <TextInput style={styles.input} placeholder="Value" />
+        {/* Campos do formulário */}
+        {[
+          { label: 'Nome *', field: 'nome' },
+          { label: 'CEP *', field: 'cep', keyboardType: 'numeric' },
+          { label: 'Logradouro', field: 'logradouro' },
+          { label: 'Nº', field: 'numero', keyboardType: 'numeric' },
+          { label: 'Bairro', field: 'bairro' },
+          { label: 'Cidade', field: 'cidade' },
+          { label: 'Estado', field: 'estado' },
+        ].map(({ label, field, keyboardType }) => (
+          <View key={field} style={styles.inputContainer}>
+            <Text style={styles.label}>{label}</Text>
+            <TextInput
+              style={styles.input}
+              placeholder={label}
+              value={formData[field]}
+              onChangeText={(value) => handleInputChange(field, value)}
+              keyboardType={keyboardType || 'default'}
+            />
+          </View>
+        ))}
 
-        <Text style={styles.label}>CEP</Text>
-        <TextInput style={styles.input} placeholder="Value" />
-
-        <Text style={styles.label}>Logradouro</Text>
-        <TextInput style={styles.input} placeholder="Value" />
-
-        <Text style={styles.label}>Nº</Text>
-        <TextInput style={styles.input} placeholder="Value" />
-
-        <Text style={styles.label}>Bairro</Text>
-        <TextInput style={styles.input} placeholder="Value" />
-
-        <Text style={styles.label}>Cidade</Text>
-        <TextInput style={styles.input} placeholder="Value" />
-
-        <Text style={styles.label}>Estado</Text>
-        <TextInput style={styles.input} placeholder="Value" />
-
-        <TouchableOpacity style={styles.saveButton}>
-          <Text style={styles.saveButtonText}>Salvar</Text>
-        </TouchableOpacity>
+        {loading ? (
+          <ActivityIndicator size="large" color="#4CAF50" />
+        ) : (
+          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+            <Text style={styles.saveButtonText}>Salvar</Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
 
+      {/* Footer */}
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => router.push('/home')}>
           <Icon name="home-outline" size={30} color="#4CAF50" />
@@ -74,6 +140,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 20,
   },
+  inputContainer: {
+    marginBottom: 15,
+  },
   label: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -85,7 +154,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 10,
-    marginBottom: 20,
   },
   saveButton: {
     backgroundColor: '#4CAF50',
@@ -94,7 +162,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     alignSelf: 'center',
-    marginBottom: 20, 
+    marginBottom: 20,
   },
   saveButtonText: {
     color: '#fff',
@@ -108,12 +176,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderTopWidth: 1,
     borderColor: '#ddd',
-
   },
-  
 });
 
 export default AdicionarLocal;
-
-
-

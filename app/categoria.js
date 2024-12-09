@@ -1,22 +1,39 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
-import useStore from '../store/useStore';
+import axios from 'axios';
 
 const AdicionarCategoria = () => {
   const router = useRouter();
-  const { addCategory } = useStore();
   const [nomeCategoria, setNomeCategoria] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSave = () => {
-    if (nomeCategoria.trim() !== '') {
-      addCategory(nomeCategoria);
-      setNomeCategoria('');
-      Alert.alert('Sucesso', 'Categoria salva com sucesso!');
-      router.push('/categoria');
-    } else {
-      alert('Por favor, insira um nome para a categoria.');
+  const salvarCategoria = async () => {
+    if (!nomeCategoria.trim()) {
+      Alert.alert('Erro', 'O campo Nome é obrigatório.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await axios.post('https://api-produtos-9jmi.onrender.com/categories/add', {
+        nome: nomeCategoria,
+      });
+
+      if (response.status === 201) {
+        Alert.alert('Sucesso', 'Categoria adicionada com sucesso!');
+        setNomeCategoria('');
+        router.push('/categoria'); // Redireciona para a página de categorias
+      } else {
+        Alert.alert('Erro', 'Não foi possível salvar a categoria.');
+      }
+    } catch (error) {
+      console.error('Erro na requisição:', error.message || error);
+      Alert.alert('Erro', 'Ocorreu um erro ao tentar salvar a categoria.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -29,13 +46,18 @@ const AdicionarCategoria = () => {
           style={styles.input}
           placeholder="Digite o nome da categoria"
           value={nomeCategoria}
-          onChangeText={setNomeCategoria} 
+          onChangeText={setNomeCategoria}
         />
-
-        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-          <Text style={styles.saveButtonText}>Salvar</Text>
-        </TouchableOpacity>
+        {loading ? (
+          <ActivityIndicator size="large" color="#4CAF50" />
+        ) : (
+          <TouchableOpacity style={styles.saveButton} onPress={salvarCategoria}>
+            <Text style={styles.saveButtonText}>Salvar</Text>
+          </TouchableOpacity>
+        )}
       </View>
+
+      {/* Footer */}
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => router.push('/home')}>
           <Icon name="home-outline" size={30} color="#4CAF50" />
